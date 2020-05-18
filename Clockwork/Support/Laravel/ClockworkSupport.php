@@ -149,8 +149,8 @@ class ClockworkSupport
 				->resolveAsCommand(
 					$event->command,
 					$event->exitCode,
-					array_diff($event->input->getArguments(), $argumentsDefaults),
-					array_diff($event->input->getOptions(), $optionsDefaults),
+                    $this->arrayDiffRecursive($event->input->getArguments(), $argumentsDefaults),
+                    $this->arrayDiffRecursive($event->input->getOptions(), $optionsDefaults),
 					$argumentsDefaults,
 					$optionsDefaults,
 					$this->getConfig('artisan.collect_output') ? $event->output->getFormatter()->capturedOutput() : null
@@ -443,4 +443,37 @@ class ClockworkSupport
 			'clockwork:clean'
 		];
 	}
+
+    /**
+     * @param array $firstArray
+     * @param array $secondArray
+     * @return array
+     */
+    public function arrayDiffRecursive(array $firstArray, array $secondArray): array
+    {
+        $outputDiff = [];
+
+        foreach ($firstArray as $key => $value)
+        {
+            //if the key exists in the second array, recursively call this function
+            //if it is an array, otherwise check if the value is in arr2
+            if (array_key_exists($key, $secondArray)) {
+                if (is_array($value)) {
+                    $recursiveDiff = $this->arrayDiffRecursive($value, $secondArray[$key]);
+                    if (count($recursiveDiff)) {
+                        $outputDiff[$key] = $recursiveDiff;
+                    }
+                } else if (!in_array($value, $secondArray)) {
+                    $outputDiff[$key] = $value;
+                }
+            }
+            //if the key is not in the second array, check if the value is in
+            //the second array (this is a quirk of how array_diff works)
+            else if (!in_array($value, $secondArray)) {
+                $outputDiff[$key] = $value;
+            }
+        }
+
+        return $outputDiff;
+    }
 }
