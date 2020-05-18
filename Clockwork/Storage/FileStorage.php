@@ -131,6 +131,9 @@ class FileStorage extends Storage
 
 	protected function loadRequests($ids)
 	{
+	    if(!$ids) return [];
+	    if(!is_array($ids)) $ids = [$ids];
+
 		return array_filter(array_map(function ($id) { return $this->loadRequest($id); }, $ids));
 	}
 
