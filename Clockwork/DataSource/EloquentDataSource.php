@@ -8,6 +8,7 @@ use Clockwork\Support\Laravel\Eloquent\ResolveModelLegacyScope;
 
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Data source for Eloquent (Laravel ORM), provides database queries
@@ -144,6 +145,18 @@ class EloquentDataSource extends DataSource
 		$request->databaseOthers       += $this->count['other'];
 
 		$this->appendDuplicateQueriesWarnings($request);
+
+        Log::debug('Clockwork: queries', [
+            'queries' => $request->databaseQueries,
+            'count' => [
+                'slow' => $request->databaseSlowQueries,
+                'select' => $request->databaseSelects,
+                'insert' => $request->databaseInserts,
+                'update' => $request->databaseUpdates,
+                'delete' => $request->databaseDeletes,
+                'other' => $request->databaseOthers,
+            ],
+        ]);
 
 		return $request;
 	}
