@@ -167,11 +167,11 @@ class ClockworkServiceProvider extends ServiceProvider
 			));
 
 			// if we are collecting queue jobs, filter out queries caused by the database queue implementation
-			if ($app['clockwork.support']->isCollectingQueueJobs()) {
-				$dataSource->addFilter(function ($query, $trace) {
-					return ! $trace->first(StackFilter::make()->isClass(\Illuminate\Queue\Worker::class));
-				}, 'early');
-			}
+//			if ($app['clockwork.support']->isCollectingQueueJobs()) {
+//				$dataSource->addFilter(function ($query, $trace) {
+//					return ! $trace->first(StackFilter::make()->isClass(\Illuminate\Queue\Worker::class));
+//				}, 'early');
+//			}
 
 			if ($app->runningUnitTests()) {
 				$dataSource->addFilter(function ($query, $trace) {
