@@ -146,17 +146,20 @@ class EloquentDataSource extends DataSource
 
 		$this->appendDuplicateQueriesWarnings($request);
 
-        Log::debug('Clockwork: queries', [
-            'queries' => $request->databaseQueries,
-            'count' => [
-                'slow' => $request->databaseSlowQueries,
-                'select' => $request->databaseSelects,
-                'insert' => $request->databaseInserts,
-                'update' => $request->databaseUpdates,
-                'delete' => $request->databaseDeletes,
-                'other' => $request->databaseOthers,
-            ],
-        ]);
+		if($request->databaseQueriesCount > 0) {
+            Log::debug('Clockwork: queries', [
+                'count' => [
+                    'slow' => $request->databaseSlowQueries,
+                    'select' => $request->databaseSelects,
+                    'insert' => $request->databaseInserts,
+                    'update' => $request->databaseUpdates,
+                    'delete' => $request->databaseDeletes,
+                    'other' => $request->databaseOthers,
+                ],
+                'queries' => $request->databaseQueries,
+            ]);
+        }
+
 
 		return $request;
 	}
